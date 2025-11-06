@@ -240,8 +240,43 @@ class PackageResolver:
         
         return None
     
+    def _get_model_paths_from_env(self) -> List[Path]:
+        """
+        Get model paths from environment variable.
+        
+        Reads the URDF2MJCF_MODEL_PATH environment variable, which should contain
+        a colon-separated (Linux/Mac) or semicolon-separated (Windows) list of paths
+        to directories containing ROS packages (typically *_description packages).
+        
+        Returns:
+            List of paths from the environment variable
+        """
+        env_var = os.environ.get("URDF2MJCF_MODEL_PATH", "")
+        if not env_var:
+            return []
+        
+        # Use platform-appropriate path separator
+        separator = ";" if platform.system() == "Windows" else ":"
+        paths = []
+        
+        for path_str in env_var.split(separator):
+            path_str = path_str.strip()
+            if path_str:
+                path = Path(path_str).resolve()
+                if path.exists() and path.is_dir():
+                    paths.append(path)
+                    logger.debug(f"Added model path from environment: {path}")
+                else:
+                    logger.warning(f"Model path from environment does not exist: {path_str}")
+        
+        return paths
+    
     def _add_default_search_paths(self, search_paths: List[Path] = []) -> List[Path]:
         """Get default search paths based on operating system and environment."""
+        # Add paths from environment variable first (highest priority after explicit search_paths)
+        env_paths = self._get_model_paths_from_env()
+        search_paths.extend(env_paths)
+        
         # Current working directory and parent directories (for development)
         current_path = Path.cwd()
         search_paths.extend([

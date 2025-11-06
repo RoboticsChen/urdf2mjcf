@@ -82,6 +82,66 @@ urdf2mjcf rm65b_eg24c2_description.urdf \
 python -m mujoco.viewer --mjcf=mjcf/rm65.xml
 ```
 
+### Environment Variables - URDF2MJCF_MODEL_PATH
+
+You can set the `URDF2MJCF_MODEL_PATH` environment variable to specify additional search paths for ROS packages and mesh files. This is particularly useful when your robot description packages are not in standard ROS workspace locations.
+
+#### Manual Setup
+
+**Format:**
+- **Linux/Mac**: Colon-separated paths (`:`)
+- **Windows**: Semicolon-separated paths (`;`)
+
+```bash
+# Linux/Mac
+export URDF2MJCF_MODEL_PATH="/path/to/robot1_description:/path/to/robot2_description:/path/to/models"
+
+# Windows
+set URDF2MJCF_MODEL_PATH="C:\path\to\robot1_description;C:\path\to\robot2_description"
+```
+
+#### Model Path Manager Tool
+
+We provide a convenient command-line tool to manage the `URDF2MJCF_MODEL_PATH` environment variable:
+
+```bash
+# Scan a workspace for ROS description packages and generate export command
+urdf2mjcf-modelpath scan /path/to/your/workspace
+
+# Scan multiple directories
+urdf2mjcf-modelpath scan /path/to/workspace1 /path/to/workspace2
+
+# List current paths in the environment variable
+urdf2mjcf-modelpath list
+
+# Generate command to unset the environment variable
+urdf2mjcf-modelpath unset
+```
+
+**Features:**
+- Recursively searches for packages ending with `_description`
+- Verifies packages contain `package.xml` and typical robot folders (urdf, meshes, etc.)
+- Generates the appropriate export command for your shell
+- Shows which paths are new vs. existing
+- Provides instructions to make changes permanent
+
+**Example Output:**
+```
+======================================================================
+✅ Total 2 path(s) in URDF2MJCF_MODEL_PATH:
+======================================================================
+🆕 1. /workspace/src/robot1_description
+🆕 2. /workspace/src/robot2_description
+
+======================================================================
+📝 To apply these changes, run the following command:
+======================================================================
+
+export URDF2MJCF_MODEL_PATH="/workspace/src/robot1_description:/workspace/src/robot2_description"
+```
+
+These paths will be searched when resolving `package://` URIs and locating mesh files.
+
 ## 🤝 Acknowledgments
 
 This project builds upon these excellent open-source projects:

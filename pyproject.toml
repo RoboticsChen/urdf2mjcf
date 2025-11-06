@@ -55,6 +55,7 @@ Issues = "https://github.com/TATP-233/urdf2mjcf/issues"
 [project.scripts]
 urdf2mjcf = "urdf2mjcf.convert:main"
 mjcf2obj = "urdf2mjcf.mjcf2obj:main"
+urdf2mjcf-modelpath = "urdf2mjcf.model_path_manager:main"
 
 [tool.setuptools.packages.find]
 where = ["."]

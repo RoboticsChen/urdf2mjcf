@@ -79,6 +79,66 @@ urdf2mjcf rm65b_eg24c2_description.urdf \
 python -m mujoco.viewer --mjcf=mjcf/rm65.xml
 ```
 
+### 环境变量 - URDF2MJCF_MODEL_PATH
+
+你可以设置 `URDF2MJCF_MODEL_PATH` 环境变量来指定额外的ROS包和网格文件搜索路径。这在你的机器人描述包不在标准ROS工作空间位置时特别有用。
+
+#### 手动设置
+
+**格式:**
+- **Linux/Mac**: 冒号分隔的路径 (`:`)
+- **Windows**: 分号分隔的路径 (`;`)
+
+```bash
+# Linux/Mac
+export URDF2MJCF_MODEL_PATH="/path/to/robot1_description:/path/to/robot2_description:/path/to/models"
+
+# Windows
+set URDF2MJCF_MODEL_PATH="C:\path\to\robot1_description;C:\path\to\robot2_description"
+```
+
+#### 模型路径管理工具
+
+我们提供了一个便捷的命令行工具来管理 `URDF2MJCF_MODEL_PATH` 环境变量:
+
+```bash
+# 扫描工作空间中的ROS描述包并生成导出命令
+urdf2mjcf-modelpath scan /path/to/your/workspace
+
+# 扫描多个目录
+urdf2mjcf-modelpath scan /path/to/workspace1 /path/to/workspace2
+
+# 列出环境变量中的当前路径
+urdf2mjcf-modelpath list
+
+# 生成取消设置环境变量的命令
+urdf2mjcf-modelpath unset
+```
+
+**功能特点:**
+- 递归搜索以 `_description` 结尾的包
+- 验证包含 `package.xml` 和典型的机器人文件夹 (urdf, meshes 等)
+- 为你的shell生成适当的导出命令
+- 显示哪些路径是新的，哪些是已存在的
+- 提供使更改永久生效的说明
+
+**示例输出:**
+```
+======================================================================
+✅ 总计 2 个路径在 URDF2MJCF_MODEL_PATH 中:
+======================================================================
+🆕 1. /workspace/src/robot1_description
+🆕 2. /workspace/src/robot2_description
+
+======================================================================
+📝 要应用这些更改，请运行以下命令:
+======================================================================
+
+export URDF2MJCF_MODEL_PATH="/workspace/src/robot1_description:/workspace/src/robot2_description"
+```
+
+这些路径将在解析 `package://` URI 和定位网格文件时被搜索。
+
 ## 🤝 致谢
 
 本项目基于以下优秀开源项目：
