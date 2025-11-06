@@ -867,6 +867,17 @@ def convert_urdf_to_mjcf(
         print(f"Adding appendix...")
         for appendix_file in appendix_files:
             add_appendix(mjcf_path, appendix_file)
+    
+    # Capture robot images
+    print(f"Capturing robot images...")
+    try:
+        from urdf2mjcf.postprocess.capture import capture_robot_images
+        capture_robot_images(mjcf_path)
+    except Exception as e:
+        logger.warning(f"Failed to capture images: {e}")
+        print(f"⚠️  Image capture failed: {e}")
+        print(f"   You can manually capture images later using:")
+        print(f"   python -m urdf2mjcf.postprocess.capture {mjcf_path}")
 
 def main() -> None:
     """Parse command-line arguments and execute the URDF to MJCF conversion."""

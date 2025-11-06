@@ -221,14 +221,15 @@ def add_visual(root: ET.Element) -> None:
     Args:
         root: The MJCF root element.
     """
-    # visual = ET.SubElement(root, "visual")
-    # ET.SubElement(
-    #     visual,
-    #     "global",
-    #     attrib={
-    #         "ellipsoidinertia": "true",
-    #     },
-    # )
+    visual = ET.SubElement(root, "visual")
+    ET.SubElement(
+        visual,
+        "global",
+        attrib={
+            "offwidth": "3840",
+            "offheight": "2160"
+        },
+    )
 
 def add_assets(root: ET.Element, materials: dict[str, str], mtl_materials: dict[str, Material] = None) -> None:
     """Add texture and material assets to the MJCF root.
