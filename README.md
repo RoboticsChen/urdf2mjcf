@@ -4,10 +4,7 @@ URDF to MJCF conversion tool with support for STL, OBJ, DAE formats, automatic r
 
 [中文文档](./README_zh.md)
 
-<div style="display: flex; justify-content: center; gap: 20px;">
-  <img src="./examples/agilex-piper/piper.png" alt="piper" style="width: 45%;" />
-  <img src="./examples/realman-rm65/rm65.png" alt="rm65" style="width: 45%;" />
-</div>
+<img src="assets/family.png" alt="piper" style="width: 95%;" />
 
 ## 🚀 Installation
 
