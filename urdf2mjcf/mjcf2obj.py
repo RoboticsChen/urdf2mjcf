@@ -85,34 +85,35 @@ def _gather_assets(
 	meshdir_attr = compiler.attrib.get("meshdir", ".") if compiler is not None else "."
 	meshdir = (mjcf_path.parent / meshdir_attr).resolve()
 
-	asset_elem = root.find("asset")
 	mesh_map: Dict[str, Path] = {}
 	material_map: Dict[str, Dict[str, str]] = {}
 	texture_map: Dict[str, Dict[str, str]] = {}
 
-	if asset_elem is None:
+	asset_elems = root.findall("asset")
+	if not asset_elems:
 		logger.warning("No <asset> section found in MJCF; mesh exports may fail")
 		return mesh_map, material_map, texture_map
 
-	for mesh in asset_elem.findall("mesh"):
-		name = mesh.attrib.get("name")
-		file_attr = mesh.attrib.get("file")
-		if not name or not file_attr:
-			continue
-		mesh_map[name] = (meshdir / file_attr).resolve()
+	for asset_elem in asset_elems:
+		for mesh in asset_elem.findall("mesh"):
+			name = mesh.attrib.get("name")
+			file_attr = mesh.attrib.get("file")
+			if not name or not file_attr:
+				continue
+			mesh_map[name] = (meshdir / file_attr).resolve()
 
-	for texture in asset_elem.findall("texture"):
-		name = texture.attrib.get("name")
-		file_attr = texture.attrib.get("file")
-		if not name or not file_attr:
-			continue
-		texture_map[name] = {"file": str((meshdir / file_attr).resolve()), **texture.attrib}
+		for texture in asset_elem.findall("texture"):
+			name = texture.attrib.get("name")
+			file_attr = texture.attrib.get("file")
+			if not name or not file_attr:
+				continue
+			texture_map[name] = {"file": str((meshdir / file_attr).resolve()), **texture.attrib}
 
-	for material in asset_elem.findall("material"):
-		name = material.attrib.get("name")
-		if not name:
-			continue
-		material_map[name] = {**material.attrib}
+		for material in asset_elem.findall("material"):
+			name = material.attrib.get("name")
+			if not name:
+				continue
+			material_map[name] = {**material.attrib}
 
 	return mesh_map, material_map, texture_map
 
